@@ -367,8 +367,8 @@ export class GamepadEmulator {
                 const xMax = config.directions[gamepadDirection.right] ? 1 : 0;
                 const yMin = config.directions[gamepadDirection.up] ? -1 : 0;
                 const yMax = config.directions[gamepadDirection.down] ? 1 : 0;
-                const deltaX = moveEvent.clientX - touchDetails.startX;
-                const deltaY = moveEvent.clientY - touchDetails.startY;
+                const deltaX = moveEvent.offsetX - touchDetails.startX;
+                const deltaY = moveEvent.offsetY - touchDetails.startY;
                 let { x, y } = NormalizeClampVector(deltaX, deltaY, config.dragDistance);
                 x = Math.max(Math.min(x, xMax), xMin)
                 y = Math.max(Math.min(y, yMax), yMin)
@@ -388,12 +388,11 @@ export class GamepadEmulator {
         // add the initial event listener
         (config.tapTarget as HTMLElement).addEventListener("pointerdown", (downEvent: PointerEvent) => {
             downEvent.preventDefault();
-            touchDetails.startX = downEvent.clientX;
-            touchDetails.startY = downEvent.clientY;
+            touchDetails.startX = downEvent.offsetX;
+            touchDetails.startY = downEvent.offsetY;
             activePointerId = downEvent.pointerId;
             if (config.lockTargetWhilePressed) config.tapTarget.setPointerCapture(downEvent.pointerId);
             else config.tapTarget.releasePointerCapture(downEvent.pointerId)
-            console.log("stick pointer down", config.tapTarget.hasPointerCapture(downEvent.pointerId));
             callback(true, 0, 0);
             document.addEventListener("pointermove", pointerMoveHandler, false);
             document.addEventListener("pointerup", pointerUpHandler, false);
